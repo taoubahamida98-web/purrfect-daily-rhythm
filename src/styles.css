@@ -114,3 +114,38 @@
   }
   h1, h2, h3 { font-family: var(--font-display); }
 }
+
+:root {
+  --sky: oklch(0.86 0.08 225);
+  --sky-deep: oklch(0.72 0.11 232);
+  --cream: oklch(0.985 0.008 80);
+  --gradient-sky: linear-gradient(140deg, var(--sky) 0%, var(--sky-deep) 100%);
+  --shadow-soft: 0 10px 30px -14px oklch(0.16 0 0 / 0.25);
+  --shadow-pop: 4px 4px 0 0 oklch(0.16 0 0);
+}
+@theme inline {
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-cream: var(--cream);
+}
+@utility card-soft {
+  background: var(--card);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow-soft);
+}
+@utility card-sky {
+  background: var(--gradient-sky);
+  border-radius: 2rem;
+  border: 2px solid var(--foreground);
+  box-shadow: var(--shadow-pop);
+}
+@utility btn-pop {
+  border: 2px solid var(--foreground);
+  box-shadow: var(--shadow-pop);
+  transition: transform .12s, box-shadow .12s;
+  &:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 0 var(--foreground); }
+}
+@keyframes pop { 0%{transform:scale(.6)} 60%{transform:scale(1.15)} 100%{transform:scale(1)} }
+@utility animate-pop { animation: pop .35s ease-out; }
+@keyframes floaty { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-8px) rotate(2deg)} }
+@utility animate-floaty { animation: floaty 4s ease-in-out infinite; }
