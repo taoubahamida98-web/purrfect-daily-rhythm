@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HemRouteImport } from './routes/hem'
+import { Route as KalenderRouteImport } from './routes/kalender'
+import { Route as KattvaktRouteImport } from './routes/kattvakt'
+import { Route as MatRouteImport } from './routes/mat'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HemRoute = HemRouteImport.update({
+  id: '/hem',
+  path: '/hem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KalenderRoute = KalenderRouteImport.update({
+  id: '/kalender',
+  path: '/kalender',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KattvaktRoute = KattvaktRouteImport.update({
+  id: '/kattvakt',
+  path: '/kattvakt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatRoute = MatRouteImport.update({
+  id: '/mat',
+  path: '/mat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/hem': typeof HemRoute
+  '/kalender': typeof KalenderRoute
+  '/kattvakt': typeof KattvaktRoute
+  '/mat': typeof MatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hem': typeof HemRoute
+  '/kalender': typeof KalenderRoute
+  '/kattvakt': typeof KattvaktRoute
+  '/mat': typeof MatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/hem': typeof HemRoute
+  '/kalender': typeof KalenderRoute
+  '/kattvakt': typeof KattvaktRoute
+  '/mat': typeof MatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/hem' | '/kalender' | '/kattvakt' | '/mat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/hem' | '/kalender' | '/kattvakt' | '/mat'
+  id: '__root__' | '/' | '/hem' | '/kalender' | '/kattvakt' | '/mat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HemRoute: typeof HemRoute
+  KalenderRoute: typeof KalenderRoute
+  KattvaktRoute: typeof KattvaktRoute
+  MatRoute: typeof MatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +88,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hem': {
+      id: '/hem'
+      path: '/hem'
+      fullPath: '/hem'
+      preLoaderRoute: typeof HemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kalender': {
+      id: '/kalender'
+      path: '/kalender'
+      fullPath: '/kalender'
+      preLoaderRoute: typeof KalenderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kattvakt': {
+      id: '/kattvakt'
+      path: '/kattvakt'
+      fullPath: '/kattvakt'
+      preLoaderRoute: typeof KattvaktRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mat': {
+      id: '/mat'
+      path: '/mat'
+      fullPath: '/mat'
+      preLoaderRoute: typeof MatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HemRoute: HemRoute,
+  KalenderRoute: KalenderRoute,
+  KattvaktRoute: KattvaktRoute,
+  MatRoute: MatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
