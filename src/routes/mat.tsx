@@ -19,7 +19,7 @@ function Mat() {
       <p className="mt-2 text-center text-muted-foreground">{fed.length} av {state?.meals.length ?? 0} måltider idag</p>
       <ul className="mt-8 space-y-4">
         {state?.meals.map((m, i) => {
-          const Icon = icons[i % 3];
+          const Icon = icons[i % 3] ?? Coffee;
           const done = fed.includes(m.id);
           return (
             <li key={m.id} className={`flex items-center gap-4 rounded-3xl border-2 p-5 ${done ? "border-primary-strong bg-accent" : "border-transparent bg-card"}`}>
