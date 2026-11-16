@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PawPrint } from "lucide-react";
+import logo from "@/assets/cat-avatar.jpg";
 import cat from "@/assets/sleeping-cat.jpg";
 
 export const Route = createFileRoute("/")({
@@ -17,8 +17,8 @@ export const Route = createFileRoute("/")({
 function Start() {
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col items-center px-6 py-12 text-center">
-      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-card">
-        <PawPrint className="h-12 w-12" aria-hidden />
+      <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-border shadow-[var(--shadow-pop)]">
+        <img src={logo} alt="Kattkompis logga" width={816} height={816} className="h-full w-full object-cover" />
       </div>
       <h1 className="mt-6 text-5xl font-black">Kattkompis</h1>
       <div className="mt-8 card-sky overflow-hidden p-6">
