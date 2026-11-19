@@ -1,11 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles, UtensilsCrossed, Gamepad2, CalendarDays } from "lucide-react";
+import { ArrowRight, Sparkles, Rat, CalendarDays } from "lucide-react";
 import { AppShell, CheckButton, ProgressRing } from "@/components/AppShell";
+import { CatBowlIcon } from "@/components/CatIcons";
 import { today, useStore } from "@/lib/store";
 import avatar from "@/assets/cat-avatar.jpg";
 
 export const Route = createFileRoute("/hem")({
-  head: () => ({ meta: [{ title: "Hem – Kattkompis" }, { name: "description", content: "Dagens aktiviteter för din katt." }, { property: "og:title", content: "Hem – Kattkompis" }, { property: "og:description", content: "Dagens aktiviteter för din katt." }] }),
+  head: () => ({
+    meta: [
+      { title: "Hem – Kattkompis" },
+      { name: "description", content: "Dagens aktiviteter för din katt." },
+      { property: "og:title", content: "Hem – Kattkompis" },
+      { property: "og:description", content: "Dagens aktiviteter för din katt." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: Hem,
 });
 
@@ -17,11 +27,12 @@ function greeting() {
 function Hem() {
   const { state, toggleFed, toggleReminder } = useStore();
   if (!state) return <AppShell>{null}</AppShell>;
-  const fed = state.fed[today()] ?? [];
-  const todays = state.reminders.filter((r) => r.date === today());
+  const todayDate = today();
+  const fed = state.fed[todayDate] ?? [];
+  const todays = state.reminders.filter((r) => r.date === todayDate);
   const tasks = [
     ...state.meals.map((m) => ({ id: m.id, kind: "mat" as const, title: m.name, sub: `${m.time} · ${m.grams} g`, time: m.time, done: fed.includes(m.id), toggle: () => toggleFed(m.id) })),
-    ...todays.map((r) => ({ id: r.id, kind: "lek" as const, title: r.title, sub: r.time, time: r.time, done: r.doneOn.includes(today()), toggle: () => toggleReminder(r.id) })),
+    ...todays.map((r) => ({ id: r.id, kind: "lek" as const, title: r.title, sub: r.time, time: r.time, done: r.doneOn.includes(todayDate), toggle: () => toggleReminder(r.id) })),
   ].sort((a, b) => a.time.localeCompare(b.time));
   const doneCount = tasks.filter((t) => t.done).length;
   const next = tasks.find((t) => !t.done);
@@ -31,8 +42,9 @@ function Hem() {
     <AppShell>
       <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">{dateStr}</p>
       <h1 className="text-4xl font-black">{greeting()} {state.owner}!</h1>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{doneCount} av {tasks.length} aktiviteter klara idag.</p>
 
-      <section className="card-sky relative mt-6 overflow-hidden p-5">
+      <section className="card-sky relative mt-6 overflow-hidden p-5" aria-label={`Dagsstatus för ${state.cat}`}>
         <div className="flex items-center gap-4">
           <img src={avatar} alt={`Profilbild för ${state.cat}`} width={816} height={816} className="h-20 w-20 rounded-[1.5rem] border-2 border-border object-cover" />
           <div className="flex-1">
@@ -55,21 +67,18 @@ function Hem() {
         <Sparkles className="h-6 w-6" aria-hidden />
       </div>
       <ul className="mt-4 space-y-3">
-        {tasks.map((t) => {
-          const Icon = t.kind === "mat" ? UtensilsCrossed : Gamepad2;
-          return (
-            <li key={t.id} className={`card-soft flex items-center gap-4 p-4 transition-opacity ${t.done ? "opacity-60" : ""}`}>
-              <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${t.kind === "mat" ? "bg-sky" : "bg-muted"}`}>
-                <Icon className="h-7 w-7" aria-hidden />
-              </div>
-              <div className="flex-1">
-                <p className={`text-lg font-bold ${t.done ? "line-through" : ""}`}>{t.title}</p>
-                <p className="text-muted-foreground">{t.sub}</p>
-              </div>
-              <CheckButton done={t.done} onClick={t.toggle} label={t.kind === "mat" ? `Markera ${t.title} som given` : `Markera ${t.title} som gjord`} />
-            </li>
-          );
-        })}
+        {tasks.map((t) => (
+          <li key={t.id} className={`card-soft flex items-center gap-4 p-4 ${t.done ? "bg-muted" : ""}`}>
+            <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${t.kind === "mat" ? "bg-sky" : "bg-muted"}`}>
+              {t.kind === "mat" ? <CatBowlIcon className="h-9 w-9" /> : <Rat className="h-8 w-8" aria-hidden />}
+            </div>
+            <div className="flex-1">
+              <p className={`text-lg font-bold ${t.done ? "line-through" : ""}`}>{t.title}</p>
+              <p className="text-muted-foreground">{t.sub}</p>
+            </div>
+            <CheckButton done={t.done} onClick={t.toggle} label={t.kind === "mat" ? `Markera ${t.title} som given` : `Markera ${t.title} som gjord`} />
+          </li>
+        ))}
       </ul>
 
       <Link to="/kalender" className="btn-pop mt-6 flex min-h-14 items-center gap-3 rounded-full bg-card px-5 font-bold">

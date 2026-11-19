@@ -113,6 +113,20 @@
     font-size: 1.0625rem;
   }
   h1, h2, h3 { font-family: var(--font-display); }
+
+  /* Två färgade ringar gör fokus synligt på både ljusa ytor och den svarta menyn. */
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--cream);
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid Highlight;
+    box-shadow: none;
+  }
 }
 
 :root {

@@ -9,6 +9,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Matschema, påminnelser, kalender och kattvakt – allt för din katt på ett ställe." },
       { property: "og:title", content: "Kattkompis" },
       { property: "og:description", content: "Håll koll på din katts rutiner enkelt på ett ställe." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Start,
@@ -16,9 +18,9 @@ export const Route = createFileRoute("/")({
 
 function Start() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col items-center px-6 py-12 text-center">
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center px-6 py-12 text-center">
       <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-border shadow-[var(--shadow-pop)]">
-        <img src={logo} alt="Kattkompis logga" width={816} height={816} className="h-full w-full object-cover" />
+        <img src={logo} alt="" width={816} height={816} className="h-full w-full object-cover" />
       </div>
       <h1 className="mt-6 text-5xl font-black">Kattkompis</h1>
       <div className="mt-8 card-sky overflow-hidden p-6">
@@ -29,6 +31,6 @@ function Start() {
         Kom igång
       </Link>
       <Link to="/hem" className="mt-6 min-h-12 text-lg font-semibold underline underline-offset-4">Logga in</Link>
-    </div>
+    </main>
   );
 }

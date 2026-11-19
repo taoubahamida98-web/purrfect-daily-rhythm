@@ -16,12 +16,11 @@ const KEY = "kattkompis-v1";
 export const today = () => new Date().toISOString().slice(0, 10);
 const uid = () => Math.random().toString(36).slice(2, 10);
 
-const initial = (): State => ({
+export const createInitialState = (): State => ({
   owner: "Sara",
   cat: "Dexter",
   meals: [
     { id: "m1", name: "Frukost", time: "07:00", grams: 25 },
-    { id: "m2", name: "Lunch", time: "12:00", grams: 25 },
     { id: "m3", name: "Middag", time: "19:00", grams: 25 },
   ],
   fed: {},
@@ -31,12 +30,27 @@ const initial = (): State => ({
   sitters: [],
 });
 
+const isLunch = (meal: Meal) => meal.id === "m2" || meal.name.toLocaleLowerCase("sv-SE") === "lunch";
+
+/** Tar bort den gamla lunchen även från scheman som redan finns sparade i webbläsaren. */
+export function normalizeState(state: State): State {
+  const removedMealIds = new Set(state.meals.filter(isLunch).map((meal) => meal.id));
+  const fed = Object.fromEntries(
+    Object.entries(state.fed).map(([date, mealIds]) => [date, mealIds.filter((id) => !removedMealIds.has(id))]),
+  );
+  return { ...state, meals: state.meals.filter((meal) => !isLunch(meal)), fed };
+}
+
 let listeners: (() => void)[] = [];
 let cache: State | null = null;
 function load(): State {
   if (cache) return cache;
-  try { cache = JSON.parse(localStorage.getItem(KEY) || "") as State; } catch { cache = initial(); }
-  return cache!;
+  try {
+    cache = normalizeState(JSON.parse(localStorage.getItem(KEY) || "") as State);
+  } catch {
+    cache = createInitialState();
+  }
+  return cache;
 }
 function save(s: State) {
   cache = s;
@@ -50,7 +64,9 @@ export function useStore() {
     const l = () => setState({ ...load() });
     l();
     listeners.push(l);
-    return () => { listeners = listeners.filter((x) => x !== l); };
+    return () => {
+      listeners = listeners.filter((x) => x !== l);
+    };
   }, []);
   const update = useCallback((fn: (s: State) => State) => save(fn(load())), []);
   return {
